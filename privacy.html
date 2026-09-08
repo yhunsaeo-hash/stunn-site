@@ -27,7 +27,7 @@
   <nav><a href="/">Stunn</a><a href="/support.html">Support</a><a href="/terms.html">Terms</a></nav>
 
   <h1>Privacy Policy</h1>
-  <p class="date">Last updated 31 August 2026</p>
+  <p class="date">Last updated 8 September 2026</p>
 
 
   <h2>Overview</h2>
@@ -38,15 +38,17 @@
   <p>Stunn uses the camera to show the viewfinder and capture photos and videos. It uses the microphone to record sound with videos. The camera and microphone are used only while the app is open and active. If you deny microphone access, you can still take photos and record videos without sound.</p>
 
   <h2>Photo and Video Processing</h2>
-  <p>Photos and videos are captured and processed on your device. Camera effects, imported media processing, and face detection used by the optional Booth Enhance effect run through Apple frameworks on your device. Stunn does not create or retain a separate face profile.</p>
+  <p>Photos and videos are captured and processed on your device. Camera effects, imported media processing, and face detection used by the optional Booth Enhance effect run through Apple frameworks on your device. Stunn does not create or retain a separate face profile. Face detection results are used only during that render, are never stored, and never leave your device.</p>
   <p>Stunn reads an existing photo or video only when you choose it through the system photo picker. Processing creates a new file and does not change the original.</p>
 
   <h2>Photo Library</h2>
   <p>When you save a capture, Stunn adds it to your own Apple Photo Library. Stunn also places saved photos and videos in an album named Stunn when Photo Library access allows it. Your Photo Library is controlled by you and Apple. You can manage Stunn&#x27;s access in iOS Settings.</p>
 
-  <h2>Booth</h2>
-  <p>Stunn Booth composes your four booth photos into a strip on your device. The booth photos, the finished strip, and the session video are not uploaded anywhere. They stay on your device and go only where you send them.</p>
-  <p>Apart from communications with Apple for App Store services, Stunn does not send your photos or videos off your device.</p>
+  <h2>Booth Replay</h2>
+  <p>Booth Replay is the only Stunn feature that uploads your photo or video content. When your booth session finishes and the review screen appears, Stunn begins uploading the booth session video so the replay is ready when the strip&#x27;s QR code is scanned. When you save the strip, Stunn also uploads the four booth photos and the finished strip image. These files are stored in Cloudflare R2 storage controlled by the developer. The upload allows the QR code on the strip to open a replay page. If you discard the session instead of saving, the replay link is never printed on a saved strip, and any uploaded content is deleted automatically on the schedule described below.</p>
+  <p>Anyone who has the QR code or replay link can view the replay while it is available. Do not create a replay with content that you or the people shown do not want shared in this way.</p>
+  <p>The replay becomes unavailable three days after it is created. The uploaded photos, strip image, and video are automatically deleted from storage after three days. Booth Replay is temporary and is not a backup service.</p>
+  <p>Cloudflare processes the uploaded files on the developer&#x27;s behalf to host and deliver Booth Replay. Apart from Booth Replay and communications with Apple for App Store services, Stunn does not send your photos or videos off your device.</p>
 
   <h2>Purchases</h2>
   <p>Stunn Pro purchases and subscriptions are processed through Apple&#x27;s App Store using StoreKit. Apple handles your payment information. The developer does not receive your card number, billing address, or Apple Account credentials. Stunn receives purchase and entitlement status from Apple so it can unlock features and restore purchases.</p>
@@ -56,7 +58,7 @@
   <p>As part of standard App Store distribution, Apple makes aggregate or anonymised app analytics available to the developer through App Store Connect. These reports can include downloads, sessions, device and territory categories, purchases, subscriptions, and diagnostics. Apple collects and controls this information under its own privacy terms. App usage and diagnostic information is included only according to your Apple analytics sharing settings.</p>
 
   <h2>Local Information</h2>
-  <p>Stunn stores preferences on your device, such as the selected camera, capture settings, and whether certain hints have been shown. It may also temporarily keep a booth video on your device while a session is being composed. These files and preferences are not used for advertising or tracking.</p>
+  <p>Stunn stores preferences on your device, such as the selected camera, capture settings, and whether certain hints have been shown. It may also temporarily keep a booth video on your device while a replay upload is pending. These files and preferences are not used for advertising or tracking.</p>
 
   <h2>Email</h2>
   <p>If you contact support, the developer receives your email address and the information you include in your message. This information is used to answer your request and provide support. It is not used for advertising.</p>
@@ -66,9 +68,10 @@
 
   <h2>Your Choices</h2>
   <p>You can change camera, microphone, and Photo Library permissions in iOS Settings. You can manage Apple analytics sharing in iOS Settings under Privacy and Security, then Analytics and Improvements. You can delete local app data by deleting the app. You can delete saved media from your Photo Library.</p>
+  <p>For help with a Booth Replay before its three-day expiry, contact the developer and include the replay link. The files are deleted automatically after the retention period.</p>
 
   <h2>Security</h2>
-  <p>Stunn keeps your captures on your device, so there is no account to breach and no uploaded copy of your photos or videos to expose. No system can guarantee absolute security.</p>
+  <p>Booth Replay uploads use encrypted HTTPS connections. No system can guarantee absolute security. Keep replay links private if you do not want others to view them.</p>
 
   <h2>Changes to This Policy</h2>
   <p>This policy may be updated when Stunn changes or when legal requirements change. The effective date will be updated when a revised policy is published.</p>
