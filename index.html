@@ -356,6 +356,86 @@
 
   </main>
 
+  <!-- THE TIKTOK DEAD END, 2026-09-12. Measured in TikTok's own in-app
+       browser on an iPhone: tapping Download raises TikTok's toast, "Action
+       can't be completed", and nothing opens. The same link, the same phone,
+       opens the App Store from Safari, so this is TikTok's WebView refusing
+       the hand-off to another app, not a broken link and not the device.
+       TikTok has blocked App Store destinations from personal creator
+       accounts since 2023 and this is the message it shows.
+
+       Nobody is left at a dead end now. The tap still tries the normal link
+       first, because that is what works in every other browser; only if the
+       visitor is still sitting here afterwards does this appear, and it
+       names the one route that does work. Opening in the real browser keeps
+       the campaign tag, since the tag travels in the address. -->
+  <div id="inapp" hidden role="dialog" aria-live="polite" aria-label="Opening the App Store">
+    <p class="inapp-title">TikTok can&rsquo;t open the App&nbsp;Store</p>
+    <p class="inapp-line">
+      Tap <b>&bull;&bull;&bull;</b> at the top right of this screen, then
+      <b>Open in browser</b>. The download works from there.
+    </p>
+    <div class="inapp-row">
+      <button type="button" id="inapp-copy">Copy link</button>
+      <button type="button" id="inapp-close">Close</button>
+    </div>
+  </div>
+
+  <style>
+    /* Scoped to this panel so the page's own stylesheet is untouched. */
+    #inapp[hidden] { display: none; }
+    #inapp {
+      position: fixed;
+      z-index: 50;
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 16px 16px 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(14, 14, 14, 0.96);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+    .inapp-title {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ivory);
+    }
+    .inapp-line {
+      margin: 0 0 14px;
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: var(--quiet);
+    }
+    .inapp-line b { color: var(--ivory); font-weight: 600; }
+    .inapp-row { display: flex; gap: 10px; }
+    #inapp button {
+      flex: 1 1 auto;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ivory);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+    #inapp #inapp-copy {
+      background: var(--ivory);
+      color: #101010;
+      border-color: var(--ivory);
+    }
+  </style>
+
   <script>
     // CAMPAIGN TAGGING. stunn.app/?c=dumpling tags every App Store link on
     // this page for that account; anything else falls back to "web", so an
@@ -401,6 +481,84 @@
         v.searchParams.set("c", campaign);
         here[j].href = v.toString();
       }
+    })();
+
+    // THE IN-APP BROWSER LADDER. See the panel above for what was measured.
+    // Three rungs, and the first is the ordinary one, so a browser that works
+    // is never touched:
+    //   1. the tap runs as a normal link, which is what opens the App Store
+    //      everywhere except here;
+    //   2. if this page is still on screen, the same address is tried on the
+    //      itms-apps scheme, which some WebViews hand off when they will not
+    //      hand off https;
+    //   3. if it is STILL on screen, the panel says how to get out.
+    // Every rung is cancelled the moment the page is hidden, which is what
+    // happens when the App Store does open, so nothing appears behind it.
+    (function () {
+      var ua = navigator.userAgent || "";
+      if (!/BytedanceWebview|musical_ly|Bytedance|TikTok|trill|Instagram|FBAN|FBAV|FB_IAB|Snapchat|Line\/|Twitter/i.test(ua)) {
+        return;
+      }
+
+      var panel = document.getElementById("inapp");
+      var store = document.querySelector('a[href*="apps.apple.com"]');
+      if (!panel || !store) return;
+
+      // Only a real departure counts. An early version also listened for
+      // window blur, which fires for reasons that have nothing to do with
+      // leaving (focus moving inside the page, the address bar) and would
+      // have silently suppressed the panel, leaving the dead end in place.
+      // A panel that appears behind an App Store that DID open is harmless;
+      // a panel that never appears is the bug being fixed.
+      var left = false;
+      function gone() { left = true; }
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) gone();
+      });
+      window.addEventListener("pagehide", gone);
+
+      store.addEventListener("click", function () {
+        left = false;
+        var url = store.href;
+        setTimeout(function () {
+          if (left || document.hidden) return;
+          window.location.href = url.replace(/^https:/, "itms-apps:");
+        }, 900);
+        setTimeout(function () {
+          if (left || document.hidden) return;
+          panel.hidden = false;
+        }, 2100);
+      });
+
+      document.getElementById("inapp-close").addEventListener("click", function () {
+        panel.hidden = true;
+      });
+
+      document.getElementById("inapp-copy").addEventListener("click", function () {
+        var button = this;
+        var url = store.href;
+        function done() {
+          button.textContent = "Link copied";
+          setTimeout(function () { button.textContent = "Copy link"; }, 2000);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(done, fallback);
+        } else {
+          fallback();
+        }
+        function fallback() {
+          var box = document.createElement("textarea");
+          box.value = url;
+          box.setAttribute("readonly", "");
+          box.style.position = "fixed";
+          box.style.opacity = "0";
+          document.body.appendChild(box);
+          box.select();
+          box.setSelectionRange(0, url.length);
+          try { document.execCommand("copy"); done(); } catch (e) { /* nothing to do */ }
+          document.body.removeChild(box);
+        }
+      });
     })();
   </script>
 </body>
