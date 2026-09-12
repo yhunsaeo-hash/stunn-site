@@ -347,7 +347,7 @@
       </a>
 
       <p id="inapp-hint" hidden>
-        In TikTok, tap <b>&bull;&bull;&bull;</b> at the top right, then <b>Open in browser</b>.
+        In TikTok: tap <b>&bull;&bull;&bull;</b> then <b>Open in browser</b>.
       </p>
 
     </section>
@@ -377,8 +377,7 @@
   <div id="inapp" hidden role="dialog" aria-live="polite" aria-label="Opening the App Store">
     <p class="inapp-title">TikTok can&rsquo;t open the App&nbsp;Store</p>
     <p class="inapp-line">
-      Tap <b>&bull;&bull;&bull;</b> at the top right of this screen, then
-      <b>Open in browser</b>. The download works from there.
+      Tap <b>&bull;&bull;&bull;</b> at the top right, then <b>Open in browser</b>.
     </p>
     <div class="inapp-row">
       <button type="button" id="inapp-copy">Copy link</button>
@@ -523,19 +522,18 @@
       if (!panel || !store) return;
       if (hint) hint.hidden = false;
 
-      // ONE SECOND, his call, and both edges of it are his. The first cut
-      // waited 2.1s and he said "it takes too long to pop up the user would
-      // be gone". The instant version that replaced it he cut the other way:
-      // "make it like half the time it currently takes dont make it too fast
-      // either its gonna be bad". He is right about the fast edge. A panel
-      // that says TikTok cannot open the App Store, drawn on the same frame
-      // as the tap, is a lie in any browser where the tap is about to work,
-      // and the person reads it before the App Store has had time to come
-      // up. A second is long enough for a working hand-off to hide this page
-      // first and short enough to catch someone who just saw an error.
+      // HALF A SECOND, and the history is written down because the word
+      // "currently" moved under us twice. 2.1s shipped first and he called
+      // it too slow; 0ms replaced it and he called that too fast; 1.0s
+      // followed, and he asked for half again. 500ms is the floor and the
+      // reason is the fast edge he named: a panel that says TikTok cannot
+      // open the App Store is a lie in any browser where the tap is about
+      // to work, and under half a second it is drawn before the App Store
+      // has had time to come up. It is still cancelled the moment the page
+      // hides, so a working hand-off shows it briefly at worst.
       //
-      // The line under the button is the instant half. It is already on
-      // screen before the tap, so nobody is waiting on this for guidance.
+      // Nobody waits on this for guidance in any case. The line under the
+      // button is already on screen before the tap.
       var timer = null;
 
       // A hidden page means the hand-off worked and this is not the broken
@@ -553,7 +551,7 @@
         timer = setTimeout(function () {
           if (document.hidden) return;
           panel.hidden = false;
-        }, 1000);
+        }, 500);
       });
 
       document.getElementById("inapp-close").addEventListener("click", function () {
