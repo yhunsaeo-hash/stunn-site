@@ -1,67 +1,251 @@
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Support · Stunn</title>
+<title>Stunn Camera Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-  :root { color-scheme: dark; }
+  /* Committed to one dark world on purpose: the app is dark only
+     (UIUserInterfaceStyle = Dark) and these are its own tokens, lifted
+     from StunnTheme.swift so the site and the product agree. Every
+     colour is painted explicitly, so the page holds on any ground. */
+  :root {
+    --ground:  #0B0B0B;
+    --panel:   #131211;
+    --edge:    #2B2825;
+    --ink:     #F4F0E7;
+    --quiet:   #A7A39C;
+    --amber:   #F2B45C;
+
+    --display: Archivo, "Helvetica Neue", Arial, sans-serif;
+    --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --gut: clamp(20px, 5vw, 56px);
+  }
+  html { color-scheme: dark; }
+  * { box-sizing: border-box; }
+
   body {
-    margin: 0; background: #0B0B0B; color: #F4F0E7;
-    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--display);
+    font-weight: 500;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 40rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
-  nav { font-size: 0.875rem; color: #A7A39C; margin-bottom: 3rem; }
-  nav a { color: #A7A39C; text-decoration: none; margin-right: 1.25rem; }
-  nav a:hover { color: #F4F0E7; }
-  h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 2rem; }
-  h2 { font-size: 1rem; font-weight: 600; margin: 2.5rem 0 0.5rem; }
-  p, li { color: #D8D4CB; }
-  ul { padding-left: 1.25rem; }
-  li { margin-bottom: 0.5rem; }
-  a { color: #F4F0E7; }
-  .mail { display: inline-block; margin-top: 0.5rem; font-size: 1.0625rem; }
-  footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid #232323;
-           color: #A7A39C; font-size: 0.875rem; }
+
+  .page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: clamp(26px, 6vw, 60px) var(--gut) clamp(40px, 8vw, 80px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(30px, 6vw, 52px);
+  }
+
+  /* ---- masthead ------------------------------------------------- */
+  .top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    border-bottom: 1px solid var(--edge);
+    padding-bottom: 14px;
+  }
+  .mark {
+    margin: 0;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+  }
+  .top .where {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--quiet);
+  }
+
+  /* ---- the claim ------------------------------------------------ */
+  .claim { display: flex; flex-direction: column; gap: 18px; max-width: 22ch; }
+  .claim h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: clamp(38px, 8.4vw, 74px);
+    line-height: 0.98;
+    letter-spacing: -0.028em;
+    text-wrap: balance;
+  }
+  .claim h1 span { color: var(--quiet); }
+  .claim p {
+    margin: 0;
+    max-width: 46ch;
+    font-size: clamp(15px, 2.1vw, 17px);
+    line-height: 1.6;
+    color: var(--quiet);
+    font-weight: 500;
+  }
+
+  /* ---- the proof sheet ------------------------------------------ */
+  /* Three bodies, three real frames. The captions carry the year of the
+     camera each body models, which is the whole difference between this
+     and a filter. */
+  .sheet {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(22px, 4vw, 26px);
+  }
+  @media (min-width: 720px) {
+    .sheet { grid-template-columns: repeat(3, 1fr); }
+  }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 11px; }
+  figure img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: var(--panel);
+    border: 1px solid var(--edge);
+  }
+  figcaption { display: flex; flex-direction: column; gap: 3px; }
+  .body-name {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 12.5px;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+  }
+  .body-spec {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--quiet);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- the one bright thing ------------------------------------- */
+  .act {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 22px;
+    border-top: 1px solid var(--edge);
+    padding-top: clamp(24px, 4vw, 30px);
+  }
+  /* A plain anchor by design. A script redirect or a meta refresh counts
+     as a navigation, and iOS will not hand off to the App Store from one
+     inside an embedded browser, which is why links pasted straight into
+     social bios fail. The tap has to be the visitor's own. */
+  .get {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--amber);
+    color: #17130E;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.01em;
+    padding: 15px 22px;
+    border-radius: 2px;
+    transition: background 140ms ease;
+  }
+  .get:hover { background: #F8C57F; }
+  .get:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .get .tick { font-family: var(--mono); font-weight: 500; }
+  .req {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--quiet);
+  }
+
+  /* ---- footer ---------------------------------------------------- */
+  footer {
+    border-top: 1px solid var(--edge);
+    padding-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    align-items: baseline;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--quiet);
+  }
+  footer a { color: var(--quiet); text-decoration: none; border-bottom: 1px solid var(--edge); }
+  footer a:hover { color: var(--ink); }
+  footer a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  footer .sp { flex: 1 1 auto; }
+
+  @media (prefers-reduced-motion: reduce) { .get { transition: none; } }
 </style>
-<div class="wrap">
-  <nav><a href="/">Stunn</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></nav>
 
-  <h1>Support</h1>
+<div class="page">
+  <header class="top">
+    <p class="mark">Stunn</p>
+    <span class="where">iPhone &amp; iPad</span>
+  </header>
 
-  <p>Email <a class="mail" href="mailto:stunnapp.support@gmail.com">stunnapp.support@gmail.com</a>
-  and a real person reads it. Usually a reply within a day or two.</p>
+  <section class="claim">
+    <h1>Every body fitted to <span>the real camera.</span></h1>
+    <p>
+      Not a look laid over your photo afterwards. You pick a body, and the
+      lens, the grain, the frame rate, the way it blows a highlight and the
+      way it smears a light pointed straight at it all come with it. Photo
+      and video.
+    </p>
+  </section>
 
-  <p>If you are reporting something that went wrong, these three things make it far
-  easier to fix, and you do not need to know anything technical to answer them:</p>
-  <ul>
-    <li>Which iPhone, and which version of iOS (Settings, General, About).</li>
-    <li>Which camera you had selected when it happened.</li>
-    <li>What you were doing at the time. Photo or video, and roughly what you tapped.</li>
-  </ul>
+  <section class="sheet">
+    <figure>
+      <img src="img/f_y2k.jpg" alt="Sun through a tree canopy, shot on the Y2K body, with a vertical smear running the height of the frame.">
+      <figcaption>
+        <span class="body-name">Y2K</span>
+        <span class="body-spec">2007 CCD compact<br>vertical smear, fitted to real footage</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="img/f_s8.jpg" alt="A room corner with framed prints, shot on the S-8 body, soft and grainy like 8 mm film.">
+      <figcaption>
+        <span class="body-name">S-8</span>
+        <span class="body-spec">Super 8, 8 mm film<br>grain and softness fitted to 95 reels</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="img/f_dispo.jpg" alt="A train interior lit hard by flash, shot on the DISPO 400 body.">
+      <figcaption>
+        <span class="body-name">DISPO 400</span>
+        <span class="body-spec">1998 single use, f/10 &middot; 1/100 &middot; ISO 400<br>one shutter, no meter</span>
+      </figcaption>
+    </figure>
+  </section>
 
-  <h2>Which iPhones can run Stunn</h2>
-  <p>Any iPhone on iOS 16.4 or later, which means iPhone 8 and everything newer.</p>
+  <section class="act">
+    <a class="get" id="get" href="https://apps.apple.com/ca/app/stunn-photobooth-film-cam/id6793460911">
+      <span>Get Stunn on the App Store</span>
+      <span class="tick" aria-hidden="true">&rarr;</span>
+    </a>
+    <span class="req">iOS 16.4 or later<br>Free to try</span>
+  </section>
 
-  <h2>Where do my photos go</h2>
-  <p>Into your Photos library, and also into an album called Stunn so you can find them
-  quickly. If you declined photo library access when the app asked, Stunn cannot save
-  anything. Turn it on in Settings, Stunn, Photos.</p>
-
-  <h2>The preview looks different from the photo I get</h2>
-  <p>It should not, and if it does we want to know. Tell us which camera and we will
-  look at that specific one.</p>
-
-  <h2>Can I use my existing photos and videos</h2>
-  <p>Yes. Import an existing photo or video and run it through any of the cameras.
-  Everything happens on your phone, and your original is never modified.</p>
-
-  <h2>Does Stunn need the internet</h2>
-  <p>No. It has no network code at all. It works in a basement, on a plane, anywhere.
-  See the <a href="/privacy.html">privacy policy</a> for what that means for your data,
-  which is short, because the answer is that we collect none of it.</p>
-
-  <h2>Feature requests</h2>
-  <p>Send them. Requests for specific cameras are especially welcome. If you know the
-  exact body you want reproduced, say which one, because that is how these get built.</p>
-
-  <footer>Stunn · stunn.app</footer>
+  <footer>
+    <span>&copy; 2026 Stunn</span>
+    <span class="sp"></span>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+    <a href="/support.html">Support</a>
+  </footer>
 </div>
+
+<script>
+  // Campaign tagging without a redirect. stunn.app/?c=dumpling tags the
+  // button for that account; anything else falls back to "web". The href
+  // is set BEFORE any tap, so the visitor still taps a direct link to the
+  // App Store and the hand-off works from inside a social app's browser.
+  (function () {
+    var allowed = { dumpling: 1, stunn: 1, web: 1 };
+    var c = new URLSearchParams(location.search).get("c");
+    if (!c || !allowed[c]) c = "web";
+    var a = document.getElementById("get");
+    a.href = a.href + "?pt=129131821&ct=" + c;
+  })();
+</script>
