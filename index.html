@@ -389,12 +389,18 @@
     /* Scoped to this panel so the page's own stylesheet is untouched. */
     #inapp[hidden], #inapp-hint[hidden] { display: none; }
     #inapp-hint {
-      /* auto side margins, the same as .intro and .download above it: the
-         box is narrower than the column, so without them it hugs the left
-         edge and reads as crooked under a centred button. His catch. The
-         shadow is .intro's, because this sits over the photograph too. */
+      /* NO max-width, deliberately, and this is the second fix to the same
+         line. It first had margin 14px 0 0, which pinned the box to the
+         left edge; auto margins centred the box but the box was still
+         capped at 30ch, and a ch is the width of a digit in whatever font
+         and size the DEVICE settles on. On his phone the line came out
+         wider than that cap and hung out of its own box to the left of
+         centre, which is exactly what he saw. With no cap the box is the
+         full column, the line centres inside it at any font size, and a
+         line too long to fit wraps into two centred lines instead of
+         hanging off the side. The shadow is .intro's, because this sits
+         over the photograph just as that does. */
       margin: 14px auto 0;
-      max-width: 30ch;
       font-size: 12.5px;
       line-height: 1.45;
       color: var(--quiet);
