@@ -346,6 +346,10 @@
         </span>
       </a>
 
+      <p id="inapp-hint" hidden>
+        In TikTok, tap <b>&bull;&bull;&bull;</b> at the top right, then <b>Open in browser</b>.
+      </p>
+
     </section>
 
     <footer class="legal">
@@ -364,11 +368,11 @@
        TikTok has blocked App Store destinations from personal creator
        accounts since 2023 and this is the message it shows.
 
-       Nobody is left at a dead end now. The tap still tries the normal link
-       first, because that is what works in every other browser; only if the
-       visitor is still sitting here afterwards does this appear, and it
-       names the one route that does work. Opening in the real browser keeps
-       the campaign tag, since the tag travels in the address. -->
+       Nobody is left at a dead end now. The tap still runs the normal link,
+       because that is what works in every other browser, and this comes up
+       on the same frame so it is already here when TikTok's toast lands. It
+       names the one route that does work; opening in the real browser also
+       keeps the campaign tag, since the tag travels in the address. -->
   <div id="inapp" hidden role="dialog" aria-live="polite" aria-label="Opening the App Store">
     <p class="inapp-title">TikTok can&rsquo;t open the App&nbsp;Store</p>
     <p class="inapp-line">
@@ -383,7 +387,15 @@
 
   <style>
     /* Scoped to this panel so the page's own stylesheet is untouched. */
-    #inapp[hidden] { display: none; }
+    #inapp[hidden], #inapp-hint[hidden] { display: none; }
+    #inapp-hint {
+      margin: 14px 0 0;
+      max-width: 22em;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--quiet);
+    }
+    #inapp-hint b { color: var(--ivory); font-weight: 600; }
     #inapp {
       position: fixed;
       z-index: 50;
@@ -483,17 +495,22 @@
       }
     })();
 
-    // THE IN-APP BROWSER LADDER. See the panel above for what was measured.
-    // Three rungs, and the first is the ordinary one, so a browser that works
-    // is never touched:
-    //   1. the tap runs as a normal link, which is what opens the App Store
-    //      everywhere except here;
-    //   2. if this page is still on screen, the same address is tried on the
-    //      itms-apps scheme, which some WebViews hand off when they will not
-    //      hand off https;
-    //   3. if it is STILL on screen, the panel says how to get out.
-    // Every rung is cancelled the moment the page is hidden, which is what
-    // happens when the App Store does open, so nothing appears behind it.
+    // THE IN-APP BROWSER ROUTE, second cut. The first cut waited: it tried
+    // the itms-apps scheme at 0.9s and only showed the panel at 2.1s. He
+    // tested it inside TikTok and both halves were wrong. The scheme did not
+    // open the App Store either, so that rung bought nothing and risked a
+    // second error toast; and his verdict on the wait is the real finding:
+    // "i think it takes too long to pop up the user would be gone or at
+    // least i would be". A person who taps a button, sees an error and is
+    // told nothing for two seconds has already left.
+    //
+    // So the guidance is now instant, and it comes in two places. A line
+    // under the button before the tap, so the failed tap need not happen at
+    // all, and the panel on the same frame as the tap, so it is already on
+    // screen when TikTok's toast appears over it. The tap still runs as an
+    // ordinary link first, because that is what opens the App Store in every
+    // browser that is not this one; if it works, the page is hidden, the
+    // panel goes with it, and nobody ever reads either.
     (function () {
       var ua = navigator.userAgent || "";
       if (!/BytedanceWebview|musical_ly|Bytedance|TikTok|trill|Instagram|FBAN|FBAV|FB_IAB|Snapchat|Line\/|Twitter/i.test(ua)) {
@@ -501,33 +518,20 @@
       }
 
       var panel = document.getElementById("inapp");
+      var hint = document.getElementById("inapp-hint");
       var store = document.querySelector('a[href*="apps.apple.com"]');
       if (!panel || !store) return;
+      if (hint) hint.hidden = false;
 
-      // Only a real departure counts. An early version also listened for
-      // window blur, which fires for reasons that have nothing to do with
-      // leaving (focus moving inside the page, the address bar) and would
-      // have silently suppressed the panel, leaving the dead end in place.
-      // A panel that appears behind an App Store that DID open is harmless;
-      // a panel that never appears is the bug being fixed.
-      var left = false;
-      function gone() { left = true; }
+      // If the page is hidden, the hand-off worked and this browser is not
+      // the broken one, so the panel is taken back down rather than sitting
+      // there when they return from the App Store.
       document.addEventListener("visibilitychange", function () {
-        if (document.hidden) gone();
+        if (document.hidden) panel.hidden = true;
       });
-      window.addEventListener("pagehide", gone);
 
       store.addEventListener("click", function () {
-        left = false;
-        var url = store.href;
-        setTimeout(function () {
-          if (left || document.hidden) return;
-          window.location.href = url.replace(/^https:/, "itms-apps:");
-        }, 900);
-        setTimeout(function () {
-          if (left || document.hidden) return;
-          panel.hidden = false;
-        }, 2100);
+        panel.hidden = false;
       });
 
       document.getElementById("inapp-close").addEventListener("click", function () {
