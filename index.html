@@ -389,11 +389,16 @@
     /* Scoped to this panel so the page's own stylesheet is untouched. */
     #inapp[hidden], #inapp-hint[hidden] { display: none; }
     #inapp-hint {
-      margin: 14px 0 0;
-      max-width: 22em;
+      /* auto side margins, the same as .intro and .download above it: the
+         box is narrower than the column, so without them it hugs the left
+         edge and reads as crooked under a centred button. His catch. The
+         shadow is .intro's, because this sits over the photograph too. */
+      margin: 14px auto 0;
+      max-width: 30ch;
       font-size: 12.5px;
       line-height: 1.45;
       color: var(--quiet);
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
     }
     #inapp-hint b { color: var(--ivory); font-weight: 600; }
     #inapp {
