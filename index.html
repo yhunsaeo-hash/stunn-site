@@ -369,10 +369,11 @@
        accounts since 2023 and this is the message it shows.
 
        Nobody is left at a dead end now. The tap still runs the normal link,
-       because that is what works in every other browser, and this comes up
-       on the same frame so it is already here when TikTok's toast lands. It
-       names the one route that does work; opening in the real browser also
-       keeps the campaign tag, since the tag travels in the address. -->
+       because that is what works in every other browser, and this follows a
+       second later if the page is still here, which it only is when the
+       hand-off failed. It names the one route that does work; opening in
+       the real browser also keeps the campaign tag, since the tag travels
+       in the address. -->
   <div id="inapp" hidden role="dialog" aria-live="polite" aria-label="Opening the App Store">
     <p class="inapp-title">TikTok can&rsquo;t open the App&nbsp;Store</p>
     <p class="inapp-line">
@@ -504,13 +505,12 @@
     // least i would be". A person who taps a button, sees an error and is
     // told nothing for two seconds has already left.
     //
-    // So the guidance is now instant, and it comes in two places. A line
-    // under the button before the tap, so the failed tap need not happen at
-    // all, and the panel on the same frame as the tap, so it is already on
-    // screen when TikTok's toast appears over it. The tap still runs as an
-    // ordinary link first, because that is what opens the App Store in every
-    // browser that is not this one; if it works, the page is hidden, the
-    // panel goes with it, and nobody ever reads either.
+    // The guidance now comes in two places. A line under the button before
+    // the tap, which is the instant half and means the failed tap need not
+    // happen at all, and the panel a second after the tap. The tap still
+    // runs as an ordinary link first, because that is what opens the App
+    // Store in every browser that is not this one; if it works, the page is
+    // hidden, the panel is cancelled, and nobody ever reads either.
     (function () {
       var ua = navigator.userAgent || "";
       if (!/BytedanceWebview|musical_ly|Bytedance|TikTok|trill|Instagram|FBAN|FBAV|FB_IAB|Snapchat|Line\/|Twitter/i.test(ua)) {
@@ -523,15 +523,37 @@
       if (!panel || !store) return;
       if (hint) hint.hidden = false;
 
-      // If the page is hidden, the hand-off worked and this browser is not
-      // the broken one, so the panel is taken back down rather than sitting
-      // there when they return from the App Store.
+      // ONE SECOND, his call, and both edges of it are his. The first cut
+      // waited 2.1s and he said "it takes too long to pop up the user would
+      // be gone". The instant version that replaced it he cut the other way:
+      // "make it like half the time it currently takes dont make it too fast
+      // either its gonna be bad". He is right about the fast edge. A panel
+      // that says TikTok cannot open the App Store, drawn on the same frame
+      // as the tap, is a lie in any browser where the tap is about to work,
+      // and the person reads it before the App Store has had time to come
+      // up. A second is long enough for a working hand-off to hide this page
+      // first and short enough to catch someone who just saw an error.
+      //
+      // The line under the button is the instant half. It is already on
+      // screen before the tap, so nobody is waiting on this for guidance.
+      var timer = null;
+
+      // A hidden page means the hand-off worked and this is not the broken
+      // browser, so the panel is cancelled, and taken down if it is already
+      // up rather than sitting there when they come back from the App Store.
       document.addEventListener("visibilitychange", function () {
-        if (document.hidden) panel.hidden = true;
+        if (!document.hidden) return;
+        clearTimeout(timer);
+        panel.hidden = true;
       });
+      window.addEventListener("pagehide", function () { clearTimeout(timer); });
 
       store.addEventListener("click", function () {
-        panel.hidden = false;
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          if (document.hidden) return;
+          panel.hidden = false;
+        }, 1000);
       });
 
       document.getElementById("inapp-close").addEventListener("click", function () {
