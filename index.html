@@ -346,8 +346,19 @@
         </span>
       </a>
 
+      <!-- One weight, one colour, and that is the fix to "still doesnt look
+           centered". Measured on a real iOS render at 360pt: the line spans
+           203 to 875 with the button's border at 256 to 823 and the screen
+           centre at 540, so the line was centred to half a pixel. What was
+           not centred was its WEIGHT. Bold ivory on "Open in browser" put
+           all the bright mass in the right half against a dim grey lead-in,
+           and the eye reads the bright half as the line. Threshold the same
+           screenshot at the bold's brightness and the apparent centre jumps
+           from 539 to 652, which is the illusion in numbers. The panel keeps
+           its bold: that text is left aligned, so there is no centre to
+           mislead anyone about. -->
       <p id="inapp-hint" hidden>
-        In TikTok: tap <b>&bull;&bull;&bull;</b> then <b>Open in browser</b>.
+        In TikTok: tap &bull;&bull;&bull; then Open in browser.
       </p>
 
     </section>
@@ -406,7 +417,6 @@
       color: var(--quiet);
       text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
     }
-    #inapp-hint b { color: var(--ivory); font-weight: 600; }
     #inapp {
       position: fixed;
       z-index: 50;
