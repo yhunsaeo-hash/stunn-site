@@ -397,6 +397,7 @@
       Tap <b>&bull;&bull;&bull;</b> at the top right, then <b>Open in browser</b>.
     </p>
     <div class="inapp-row">
+      <button type="button" id="inapp-safari">Open in Safari</button>
       <button type="button" id="inapp-copy">Copy link</button>
       <button type="button" id="inapp-close">Close</button>
     </div>
@@ -453,7 +454,7 @@
       color: var(--quiet);
     }
     .inapp-line b { color: var(--ivory); font-weight: 600; }
-    .inapp-row { display: flex; gap: 10px; }
+    .inapp-row { display: flex; gap: 10px; flex-wrap: wrap; }
     #inapp button {
       flex: 1 1 auto;
       padding: 11px 12px;
@@ -468,7 +469,7 @@
       appearance: none;
       cursor: pointer;
     }
-    #inapp #inapp-copy {
+    #inapp #inapp-safari, #inapp #inapp-copy {
       background: var(--ivory);
       color: #101010;
       border-color: var(--ivory);
@@ -584,6 +585,28 @@
       document.getElementById("inapp-close").addEventListener("click", function () {
         panel.hidden = true;
       });
+
+      // ONE TAP INSTEAD OF COPY AND PASTE, his ask. x-safari-https:// is an
+      // undocumented iOS scheme that hands a URL to Safari; where it is
+      // honoured this replaces the whole ... menu dance with a single tap,
+      // and Safari then opens the App Store the way it always does. It is
+      // NOT a sure thing: itms-apps:// was tried on this same panel and
+      // TikTok swallowed it, so this may be swallowed too. That is why the
+      // written instruction stays on the panel and Copy link stays beside
+      // it. If the scheme is blocked the page never hides, and the button
+      // says so rather than sitting there looking broken.
+      var safari = document.getElementById("inapp-safari");
+      if (safari) {
+        safari.addEventListener("click", function () {
+          var button = this;
+          window.location.href = "x-safari-" + store.href;
+          setTimeout(function () {
+            if (document.hidden) return;
+            button.textContent = "Blocked, use the menu above";
+            button.disabled = true;
+          }, 1400);
+        });
+      }
 
       document.getElementById("inapp-copy").addEventListener("click", function () {
         var button = this;
