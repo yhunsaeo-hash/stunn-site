@@ -522,6 +522,32 @@
       }
     })();
 
+    // ANONYMOUS COUNTS for Stunn Analytics (t.stunn.app): one "view" per
+    // page load and one "store" per tap on an App Store link. Sends the
+    // kind, the ?c= tag and only the referring site's host. No cookie,
+    // nothing stored on this page; the server counts each address once a
+    // day and never keeps the address. sendBeacon does not delay the tap,
+    // so the plain-anchor hand-off above is untouched, and any failure here
+    // is swallowed so it can never break the page.
+    (function () {
+      try {
+        if (!navigator.sendBeacon) return;
+        var allowed = { dumpling: 1, stunn: 1, web: 1 };
+        var c = new URLSearchParams(location.search).get("c");
+        if (!c || !allowed[c]) c = "web";
+        var ref = "";
+        try { ref = document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) {}
+        var count = function (kind) {
+          try { navigator.sendBeacon("https://t.stunn.app/v", JSON.stringify({ k: kind, c: c, r: ref })); } catch (e) {}
+        };
+        count("view");
+        var links = document.querySelectorAll('a[href*="apps.apple.com"]');
+        for (var i = 0; i < links.length; i++) {
+          links[i].addEventListener("click", function () { count("store"); });
+        }
+      } catch (e) {}
+    })();
+
     // THE IN-APP BROWSER ROUTE, second cut. The first cut waited: it tried
     // the itms-apps scheme at 0.9s and only showed the panel at 2.1s. He
     // tested it inside TikTok and both halves were wrong. The scheme did not
